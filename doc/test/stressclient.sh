@@ -1,0 +1,11 @@
+#!/bin/bash
+
+./docars $1 <<EOF
+ppp
+%R PISA:LUCCA
+%R PISA:LA SPEZIA
+%R PISA:LUCCa
+AREZZO:BARBERINO DI MUGELLO:4
+%HELP
+%EXIT
+EOF

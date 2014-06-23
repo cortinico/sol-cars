@@ -1,0 +1,64 @@
+.TH carstat l  "July 12, 2011" "version 1.2" "CARS - un semplice sistema di cars sharing"
+.SH NAME
+carstat \- restituisce informazioni statistiche sui file di log di mgcars
+.SH SYNOPSIS
+.B carstat
+[\-u user] [\-p partenza] [\-a arrivo] [\-d] [FILE]...
+.SH DESCRIPTION
+Elabora i dati dei file di log prodotti dal server mgcars, e restituisce delle informazioni statistiche.
+
+.PP
+I file passati in input devono essere necessariamente file di log generati dal server mgcars, il comportamento dello script con altri files non e' definito.
+
+.PP
+Fra le statistiche estrapolate e' possibile visualizzare il numero delle richieste e delle offerte per ogni singolo utente, potendo inoltre limitare la ricerca ad una specifica citta' di partenza arrivo.
+.SH OPTIONS
+.TP
+\-u <user>
+visualizza solo le statistiche dell'utente <user>
+.TP
+\-p <citta'>
+visualizza solo le statistiche relative alla citta <citta'> come partenza
+.TP
+\-a <citta'>
+visualizza solo le statistiche relative alla citta <citta'> come arrivo
+.TP
+\-d
+divide le statistiche e le visualizza separate per ogni file
+.TP
+\-h
+visualizza un breve help
+.TP
+\-v
+visualizza il numero di versione
+.SH EXAMPLES
+.TP
+Statistiche relative all'utente pippo, considerando solo le richieste/offerte dove la citta' di partenza e' pisa, relative al file mgcars.log:
+.B carstat
+\-u pippo -p PISA mgcars.log
+.PP
+.TP
+Statistiche relative alle richieste/offerte separate per file:
+.B carstat
+\-d mgcars_1.log mgcars_2.log ...
+.PP
+.SH EXIT STATUS
+carstat ritorna il valore 0 in caso di esecuzione avvenuta correttamente, altrimenti fallisce con il seguente stato di uscita:
+.TP
+.B 2
+Uno dei file non esiste, o non e' un file regolare
+.TP
+.B 7
+Un'opzione e' stata inserita troppe volte
+.TP
+.B 13
+Non si hanno i diritti di lettura su un file
+.TP
+.B 22
+Le opzioni passate sono invalide
+.SH BUGS
+Il comportamento dello script quando gli vengono passati in input file che non sono stati generati da mgcars.log non e' definito.
+.SH AUTHOR
+Nicola Corti <cortin [at] cli.di.unipi.it>
+.SH SEE ALSO
+docars(l) mgcars(l)

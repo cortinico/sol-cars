@@ -1,0 +1,96 @@
+=================================================================
+			Istruzioni per l'uso del server
+=================================================================
+
+Questa e' la guida per l'uso del client mgcars, il server per la
+gestione del sistema cars - un semplice sistema di car sharing.
+
+INDICE
+	1 - Installazione
+	2 - Esecuzione
+	3 - Risoluzione dei problemi
+	4 - Contatti
+	
+-----------------------------------------------------------------
+1 - Installazione
+-----------------------------------------------------------------
+
+Per procedere all'installazione, aprire un terminale e posizionarsi
+nella cartella src ricorrendo al comando
+
+	cd src/
+
+Una volta entrati nella cartella invocare il comando
+
+	make install-server
+	
+Se si desidera installare anche il client docars, oltre al client
+invocare il comando
+
+	make install
+	
+L'esecuzione mostrera' a video i passi che vengono eseguiti.
+Per potere completare correttamente l'installazione sono necessari
+i seguenti software
+
+	- gcc
+	- libc6-dev
+	- make
+	
+Una volta completata l'esecuzione e' possibile eseguire il client
+
+-----------------------------------------------------------------
+2 - Esecuzione
+-----------------------------------------------------------------
+
+Per eseguire il server e' sufficiente utilizzare il comando
+
+	./mgcars <city file> <arc file>
+	
+Dove a <city file> e <arc file> devono essere due nomi di file validi
+che contengano rispettivamente i nodi e gli archi da aggiungere
+al grafo del server.
+
+Una volta avviato il server eseguira una serie di operazioni
+e appena visualizzera' il messaggio "*** Server Ready ***" sara'
+possibile iniziare ad utilizzare il server per l'invio e lo
+scambio dei messaggi.
+
+Per una descrizione piu' dettagliata delle operazioni effettuate
+e dei file coinvolti si consulti il manuale.
+
+E' possibile visualizzarlo con il comando
+
+	make man-mgcars
+
+-----------------------------------------------------------------
+3 - Risoluzione dei problemi
+-----------------------------------------------------------------
+
+PROBLEMA: Il server visualizza
+
+	Creating Socket: Address already in use
+
+SOLUZIONE: Molto probabilmente, in seguito ad un arresto erroneo del
+server e' possibile che sia rimasto qualche file nella cartella tmp/
+Si provveda ad eliminarli manualmente. Successivamente si riprovi ad
+avviare il server.
+
+
+PROBLEMA: il client si e' arrestato in seguito a:
+
+	Critical error! Now exiting...
+	
+SOLUZIONE: il server ha generato un'operazione non valida. Per questo
+motivo e' stato arrestato.
+Si consiglia dunque di contattare lo sviluppatore e di indicargli
+tutti i passi che hanno preceduto l'evento che ha generato l'errore.
+
+-----------------------------------------------------------------
+4 - Risoluzione dei problemi
+-----------------------------------------------------------------
+
+E' possibile contattare lo sviluppatore all'indirizzo email
+
+	<cortin [at] cli.di.unipi.it>
+

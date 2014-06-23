@@ -1,0 +1,53 @@
+.TH docars l  "July 12, 2011" "version 1.0" "CARS - un semplice sistema di cars sharing"
+.SH NAME
+docars \- client interattivo per la connessione al server di car sharing mgcars
+.SH SYNOPSIS
+.B docars
+username
+.SH DESCRIPTION
+docars e' un client interattivo che permette di connettersi al server mgcars, al fine di inviare richieste e offerte di car sharing.
+.PP
+Una volta avviato il client chiedera' la password e tentera' di connettersi con il server mgcars.
+.PP
+Una volta stabilita la connessione iniziera' la sessione interattiva con il server. Al paragrafo FORMATO DEI MESSAGGI e' disponibile la sintassi dei messaggi che e' possibile inviare al server.
+.PP
+Una volta terminata la propria sessione e' possibile chiudere il client inviando il messaggio %EXIT oppure un EOF (Ctrl-D).
+.PP
+Se sono state inviate delle richieste il client si mettera' in attesa di sapere se la richiesta e' stata soddisfatta o meno, dopo di che il client terminera'. In caso contrario, il client terminera' immediatamente.
+
+.SH FORMATO DEI MESSAGGI
+.TP
+%R <CITTA1>:<CITTA2>
+Invia una richiesta di car sharing per un posto da <CITTA1> a <CITTA2>
+.TP
+\<CITTA1>:<CITTA2>:<NUM>
+Invia un offerta di car sharing per <num> posti da <CITTA1> a <CITTA2>
+.TP
+%HELP
+Visualizza un breve messaggio di help
+.TP
+%EXIT
+Termina la sessione interattiva e attende evenutali esiti dal server
+
+.SH EXAMPLES
+.TP
+Richiesta di car sharing da PISA a REGGIO EMILIA
+.B %R PISA:REGGIO EMILIA
+.PP
+.TP
+Offerta di 4 posti da ROMA a BOLOGNA
+.B ROMA:BOLOGNA:4
+.PP
+.SH EXIT STATUS
+docars ritorna con stato 0 se l'esecuzione e' avvenuta correttamente, in tutti gli altri casi lo stato d'uscita risulta diverso da 0.
+.SH FILES
+docars crea un file nella cartella tmp/ il cui nome risulta essere <username><pid>. Esso consiste in file speciale che viene utilizzato per comunicare con il server.
+.PP
+In tutti i casi in cui la terminazione avviene correttamente tale file viene rimosso automatico. Se il client dovesse terminare in modo inaspettato e' possibile che il file non venga rimosso; provvedere dunque manualmente alla sua rimozione.
+.PP
+.B Attenzione:
+non provare a rimuovere il file durante l'esecuzione del client. Cio' potrebbe portare a malfunzionamenti di docars.
+.SH AUTHOR
+Nicola Corti <cortin [at] cli.di.unipi.it>
+.SH SEE ALSO
+carstat(l) mgcars(l)

@@ -1,0 +1,177 @@
+Content-type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE>Man page of mgcars</TITLE>
+</HEAD><BODY>
+<H1>mgcars</H1>
+Section: CARS - un semplice sistema di cars sharing (l)<BR>Updated: July 12, 2011<BR><A HREF="#index">Index</A>
+<A HREF="/cgi-bin/man/man2html">Return to Main Contents</A><HR>
+
+<A NAME="lbAB">&nbsp;</A>
+<H2>NAME</H2>
+
+mgcars - server multithread per la gestione di un sistema di car sharing
+<A NAME="lbAC">&nbsp;</A>
+<H2>SYNOPSIS</H2>
+
+<B>mgcars</B>
+
+city_file arcs_file
+<A NAME="lbAD">&nbsp;</A>
+<H2>DESCRIPTION</H2>
+
+mgcars e' un server multithread per la gestione di un sistema di car sharing, cars.
+<P>
+
+Il server viene avviato con i parametri che sono stati settati nel file
+<B>settings.h</B>
+
+all'atto dell'installazione.
+<P>
+
+Una volta avviato, mgcars controlla che i 2 file passati in input siano corretti e si mette in attesa di connessioni entranti da parte di client 
+<B>docars</B>
+
+<P>
+
+mgcars e' in grado di servire
+-B POOL_SIZE
+client distinti contemporaneamente (tale valore deve essere settato nel file sopra citato).
+<P>
+
+Nel momento in cui avvengono determinati eventi (vedi sezione specifica MATCH DELLE RICHIESTE) il server cerca di servire le richieste pendenti con le offerte ricevute.
+Dopo averle elaborate invia i messaggi con i match trovati, le scrive sul file di log (vedi sezione LOG), ed invia un messaggio di fine elaborazione a tutti i client che hanno effettuato una richiesta.
+<P>
+
+Il server mgcars puo' essere terminato con un segnale di SIGINT o SIGTERM inviato al processo. Tale segnale provoca la terminazione di tutte le sessioni attive con i client, il calcolo degli ultimi match e la terminazione del server
+<P>
+<A NAME="lbAE">&nbsp;</A>
+<H2>MATCH DELLE RICHIESTE</H2>
+
+Il match delle richieste viene effettuato ogni volta che avviene un seguente evento:
+<P>
+
+<B>- Arriva un segnale SIGURS1</B>
+
+<P>
+
+<B>- Sono passati SEC_TIMER secondi e NSEC_TIMER nanosecondi.</B>
+
+<P>
+
+<B>- Arriva un segnale di SIGTERM o di SIGINT, che provoca conseguentemetne la terminazione del server</B>
+
+<P>
+
+Per inviare un segnale di SIGUSR1 e' possibile utilizzare l'utility kill (vedi 
+-B <A HREF="/cgi-bin/man/man2html?1+kill">kill</A>(1))
+<P>
+<A NAME="lbAF">&nbsp;</A>
+<H2>LOG</H2>
+
+<DL COMPACT>
+<DT>Ad ogni esecuzione del match, il server scrive sul file di log LOG_FILE gli accoppiamenti in questo formato:<DD>
+<P>
+<B>&lt;offerente&gt;$&lt;richiedente&gt;$&lt;partenza&gt;$...$&lt;arrivo&gt;</B>
+
+<DT><B>Esempio:</B>
+
+<DD>
+pippo$pluto$PISA$LIVORNO$CECINA$VENTURINA
+</DL>
+<P>
+
+Eventuali file di log che fossero rimasti dalle vecchie attivazioni del server vengono 
+<B>cancellati</B>
+
+ad ogni nuova attivazione, quindi si presti attenzione nel caso in cui un determinato log sia importante.
+<P>
+
+I log file possono essere elaborati con carstat (vedi <A HREF="/cgi-bin/man/man2html?l+carstat">carstat</A>(l)) per poterne ricavare informazioni statistiche sugli utenti e sulle richieste/offerte.
+<P>
+<A NAME="lbAG">&nbsp;</A>
+<H2>EXIT STATUS</H2>
+
+mgcars ritorna con stato 0 se l'esecuzione e' avvenuta correttamente, in tutti gli altri casi lo stato d'uscita risulta diverso da 0.
+<A NAME="lbAH">&nbsp;</A>
+<H2>FILES</H2>
+
+mgcars ha bisogno che i suoi file in ingresso abbiano una determinata sintassi:
+<P>
+
+<DL COMPACT>
+<DT><B>city_file</B>
+
+<DD>
+city_file deve contenere un elenco delle citta', separate da un ritorno a capo, gli unici caratteri consentiti sono i numeri e le lettere alfabetiche.
+<DT>Esempio:<DD>
+<PRE>
+PISA
+LUCCA
+LIVORNO
+MASSA
+</PRE>
+
+<P>
+</DL>
+<P>
+
+<DL COMPACT>
+<DT><B>arcs_file</B>
+
+<DD>
+arcs_file deve contenere un elenco dei collegamenti fra citta', secondo la sintassi: &lt;partenza&gt;:&lt;arrivo&gt;:&lt;distanza in km&gt;. Gli unici caratteri consentiti sono i numeri e le lettere alfabetiche.
+<DT>Esempio:<DD>
+<PRE>
+PISA:LUCCA:24.8
+PISA:LIVORNO:22.3
+LIVORNO:PISA:22.3
+PISA:VIAREGGIO:23.3
+</PRE>
+
+<P>
+</DL>
+<P>
+
+Inoltre mgcars crea un file nella cartella tmp/ il cui nome e' SOCKET_NAME. Esso consiste in file speciale che viene utilizzato per comunicare con i client.
+In tutti i casi in cui la terminazione avviene correttamente tale file viene rimosso automatico. Se il client dovesse terminare in modo inaspettato e' possibile che il file non venga rimosso; provvedere dunque manualmente alla sua rimozione.
+<P>
+
+<B>Nota: </B>
+
+Se il file SOCKET_NAME e' presente, non e' possibile avviare il server (si ricevera' l'errore Address already in user). In tal caso provvedere a rimuovere manualmente il file (mediante l'utility <A HREF="/cgi-bin/man/man2html?1+rm">rm</A>(1))
+<P>
+
+<B>Attenzione:</B>
+
+non provare a rimuovere il file durante l'esecuzione del client. Cio' potrebbe portare a malfunzionamenti di docars.
+<A NAME="lbAI">&nbsp;</A>
+<H2>AUTHOR</H2>
+
+Nicola Corti &lt;cortin [at] cli.di.unipi.it&gt;
+<A NAME="lbAJ">&nbsp;</A>
+<H2>SEE ALSO</H2>
+
+<A HREF="/cgi-bin/man/man2html?l+docars">docars</A>(l) <A HREF="/cgi-bin/man/man2html?l+carstat">carstat</A>(l)
+<P>
+
+<HR>
+<A NAME="index">&nbsp;</A><H2>Index</H2>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">MATCH DELLE RICHIESTE</A><DD>
+<DT><A HREF="#lbAF">LOG</A><DD>
+<DT><A HREF="#lbAG">EXIT STATUS</A><DD>
+<DT><A HREF="#lbAH">FILES</A><DD>
+<DT><A HREF="#lbAI">AUTHOR</A><DD>
+<DT><A HREF="#lbAJ">SEE ALSO</A><DD>
+</DL>
+<HR>
+This document was created by
+<A HREF="/cgi-bin/man/man2html">man2html</A>,
+using the manual pages.<BR>
+Time: 18:58:58 GMT, July 13, 2011
+</BODY>
+</HTML>

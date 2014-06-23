@@ -1,0 +1,123 @@
+Content-type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE>Man page of carstat</TITLE>
+</HEAD><BODY>
+<H1>carstat</H1>
+Section: CARS - un semplice sistema di cars sharing (l)<BR>Updated: July 12, 2011<BR><A HREF="#index">Index</A>
+<A HREF="/cgi-bin/man/man2html">Return to Main Contents</A><HR>
+
+<A NAME="lbAB">&nbsp;</A>
+<H2>NAME</H2>
+
+carstat - restituisce informazioni statistiche sui file di log di mgcars
+<A NAME="lbAC">&nbsp;</A>
+<H2>SYNOPSIS</H2>
+
+<B>carstat</B>
+
+[-u user] [-p partenza] [-a arrivo] [-d] [FILE]...
+<A NAME="lbAD">&nbsp;</A>
+<H2>DESCRIPTION</H2>
+
+Elabora i dati dei file di log prodotti dal server mgcars, e restituisce delle informazioni statistiche.
+<P>
+<P>
+
+I file passati in input devono essere necessariamente file di log generati dal server mgcars, il comportamento dello script con altri files non e' definito.
+<P>
+<P>
+
+Fra le statistiche estrapolate e' possibile visualizzare il numero delle richieste e delle offerte per ogni singolo utente, potendo inoltre limitare la ricerca ad una specifica citta' di partenza arrivo.
+<A NAME="lbAE">&nbsp;</A>
+<H2>OPTIONS</H2>
+
+<DL COMPACT>
+<DT>-u &lt;user&gt;<DD>
+visualizza solo le statistiche dell'utente &lt;user&gt;
+<DT>-p &lt;citta'&gt;<DD>
+visualizza solo le statistiche relative alla citta &lt;citta'&gt; come partenza
+<DT>-a &lt;citta'&gt;<DD>
+visualizza solo le statistiche relative alla citta &lt;citta'&gt; come arrivo
+<DT>-d<DD>
+divide le statistiche e le visualizza separate per ogni file
+<DT>-h<DD>
+visualizza un breve help
+<DT>-v<DD>
+visualizza il numero di versione
+</DL>
+<A NAME="lbAF">&nbsp;</A>
+<H2>EXAMPLES</H2>
+
+<DL COMPACT>
+<DT>Statistiche relative all'utente pippo, considerando solo le richieste/offerte dove la citta' di partenza e' pisa, relative al file mgcars.log:<DD>
+<B>carstat</B>
+
+-u pippo -p PISA mgcars.log
+</DL>
+<P>
+
+<DL COMPACT>
+<DT>Statistiche relative alle richieste/offerte separate per file:<DD>
+<B>carstat</B>
+
+-d mgcars_1.log mgcars_2.log ...
+</DL>
+<P>
+
+<A NAME="lbAG">&nbsp;</A>
+<H2>EXIT STATUS</H2>
+
+carstat ritorna il valore 0 in caso di esecuzione avvenuta correttamente, altrimenti fallisce con il seguente stato di uscita:
+<DL COMPACT>
+<DT><B>2</B>
+
+<DD>
+Uno dei file non esiste, o non e' un file regolare
+<DT><B>7</B>
+
+<DD>
+Un'opzione e' stata inserita troppe volte
+<DT><B>13</B>
+
+<DD>
+Non si hanno i diritti di lettura su un file
+<DT><B>22</B>
+
+<DD>
+Le opzioni passate sono invalide
+</DL>
+<A NAME="lbAH">&nbsp;</A>
+<H2>BUGS</H2>
+
+Il comportamento dello script quando gli vengono passati in input file che non sono stati generati da mgcars.log non e' definito.
+<A NAME="lbAI">&nbsp;</A>
+<H2>AUTHOR</H2>
+
+Nicola Corti &lt;cortin [at] cli.di.unipi.it&gt;
+<A NAME="lbAJ">&nbsp;</A>
+<H2>SEE ALSO</H2>
+
+<A HREF="/cgi-bin/man/man2html?l+docars">docars</A>(l) <A HREF="/cgi-bin/man/man2html?l+mgcars">mgcars</A>(l)
+<P>
+
+<HR>
+<A NAME="index">&nbsp;</A><H2>Index</H2>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">OPTIONS</A><DD>
+<DT><A HREF="#lbAF">EXAMPLES</A><DD>
+<DT><A HREF="#lbAG">EXIT STATUS</A><DD>
+<DT><A HREF="#lbAH">BUGS</A><DD>
+<DT><A HREF="#lbAI">AUTHOR</A><DD>
+<DT><A HREF="#lbAJ">SEE ALSO</A><DD>
+</DL>
+<HR>
+This document was created by
+<A HREF="/cgi-bin/man/man2html">man2html</A>,
+using the manual pages.<BR>
+Time: 16:45:36 GMT, July 13, 2011
+</BODY>
+</HTML>

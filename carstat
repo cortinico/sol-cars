@@ -1,0 +1,265 @@
+#!/bin/bash
+#
+# file: carstat
+#    \author Nicola Corti
+#  Si dichiara che il contenuto di questo file e' in ogni sua parte opera
+#  originale dell' autore.
+#    
+#
+#    Copyright (C) 2011  Nicola Corti
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#		 For further information, Nicola Corti - <cortin [at] cli.di.unipi.it>
+#
+#############################################################################
+#																																						#
+#															carstat	 v 1.2																#
+#																																						#
+#	NOTE ALGORITMICHE:																												#
+#																																						#
+# Lo script funziona utilizzando 3 array che contengono rispettivamente:		#
+#																																						#
+#		- L'elenco degli utenti che sono stati gia' trovati.										#
+#		- Il numero di offerte accettate per ogni utente.												#
+#		- Il numero di richiesta accettate per ogni utente.											#
+#																																						#
+# Dopo aver parsato le opzioni, vengono lette sequenzialmente le righe			#
+# di ogni file; vengono isolati i 2 utenti, la partenza e l'arrivo, e 			#
+# viene effettuata l'elaborazione																						#
+#																																						#
+#	VALORI DI RITORNO:																												#
+#																																						#
+#		0		Esecuzione terminata correttamente																	#
+#																																						#
+#		2		Uno dei file non esiste, o non e' un file regolare									#
+#																																						#
+#		7		Un'opzione e' stata inserita troppe volte														#
+#																																						#
+#		13	Non si hanno i diritti di lettura su un file												#
+#																																						#
+#		22	Le opzioni passate sono invalide																		#
+#																																						#
+#############################################################################
+
+
+# Funzione per la ricerca negli array.
+# $1 		nome dell'utente da cercare
+#	restituisce l'indice trovato, oppure l'indice della nuova posizione
+cerca () {
+
+local i=0
+local elem_scan
+
+for elem_scan in ${vect_utenti[@]} ; do
+  if [ "$elem_scan" == "$1" ]; then
+    return $i
+  else
+    (( i++ ))
+  fi
+done
+
+#Se arrivo qua aggiungo un nuovo utente
+vect_utenti[$i]="$1"
+vect_offer[$i]=0
+vect_rich[$i]=0
+return $i
+}
+
+# Funzione che azzera i valori delle offerte e delle richieste per ogni utente.
+# Restituisce il numero di elementi che ha azzerato
+svuota() {
+
+local i=0
+for i in $(seq 0 $((${#vect_utenti[@]} - 1))) ; do
+	vect_offer[$i]=0
+	vect_rich[$i]=0
+done
+
+return $i
+}
+
+
+# Stampa il contenuto degli array
+# Tralascia gli utenti che hanno offerte e richieste a 0
+stampa () {
+for ((i=0; i<${#vect_utenti[@]}; i++)); do
+	if [ "${vect_offer[$i]}" != "0" ] || [ "${vect_rich[$i]}" != "0" ] ; then
+	  echo "${vect_utenti[$i]}:${vect_offer[$i]}:${vect_rich[$i]}"
+	fi
+done
+}
+
+# Stampa l'help dello script
+usage() {
+	echo -e "Usage: $0 [OPTIONS]... [FILE]..."
+	echo -e "Display statistical information from mgcars server's logfiles\n"
+	echo -e "Options:"
+	echo -e "  -u <user> \t Display information from a specified user"
+	echo -e "  -p <city> \t Display information from a specified departure"
+	echo -e "  -a <city> \t Display information from a specified arrival"
+	echo -e "  -d \t\t Display information from files splitted"
+	echo -e "  -h \t\t Display this information"
+	echo -e "  -v \t\t Display version number"
+	echo -e "for bugs contact <cortin @ cli.di.unipi.it>"
+}
+
+# Stampa il numero di versione
+version(){
+	echo "carstat version 1.2"
+}
+
+
+# Valori di uscita
+ENOENT=2
+E2BIG=7
+EACCESS=13
+EINVAL=22
+
+
+# Parsing delle opzioni
+while getopts ":u:a:p:vhd" valore
+do
+		case $valore in
+		u ) if [ -n "$utente" ] || [ "${OPTARG:0:1}" == "-" ] ; then
+					usage
+					exit $E2BIG
+				else
+					utente=$OPTARG
+				fi		
+				;;
+		a ) if [ -n "$arrivo" ] || [ "${OPTARG:0:1}" == "-" ] ; then
+					usage
+					exit $E2BIG
+				else
+					arrivo=$OPTARG
+				fi		
+				;;
+		p ) if [ -n "$partenza" ] || [ "${OPTARG:0:1}" == "-" ] ; then
+					usage
+					exit $E2BIG
+				else
+					partenza=$OPTARG
+				fi		
+				;;
+		d ) if [ -n "$division" ] ; then
+					usage
+					exit $E2BIG
+				else
+					division=1
+				fi
+				;;
+		h ) usage
+				exit 0
+				;;
+		v ) version
+				exit 0
+				;;
+		* ) usage
+				exit $EINVAL
+				;;
+		esac
+done
+
+
+# Shifto $1 in modo che punti al primo file
+shift $(( $OPTIND - 1 ))
+
+declare -a vect_utenti
+declare -a vect_offer
+declare -a vect_rich
+
+if ! [ -n "$1" ]
+then
+	usage
+  exit $EINVAL
+fi
+
+
+while [ -n "$1" ]
+do
+  if ! [ -f $1 ] ; then
+  	echo "$1: is not a regular file"
+  	exit $ENOENT
+  fi
+  if ! [ -r $1 ] ; then
+  	echo "$1: permission denied"
+  	exit $ENOPERM
+  fi
+  
+  if [ -n "$division" ] ; then
+  	echo -e "----------------------\n"
+  	echo -e "FILE: $1 \n"
+  fi
+  
+  exec 3< "$1"
+  while { read -u 3 riga; } ;
+  do 
+    #Isolo il primo utente
+    
+    riga_u1="${riga%%\$*}"
+    
+    #Isolo il secondo utente
+    
+    riga_u2="${riga:(${#riga_u1} + 1)}"
+    riga_u2="${riga_u2%%\$*}"
+    
+    #Isolo la partenza
+    
+    riga_part="${riga:(${#riga_u1} + ${#riga_u2} + 2)}"
+    riga_part="${riga_part%%\$*}"
+    
+    #Isolo l'arrivo
+    
+    riga_arrivo="${riga##*\$}"
+    
+    if  [ -n "$partenza" ] && [ "$partenza" != "$riga_part" ] ; then
+      continue
+    fi
+    
+    if  [ -n "$arrivo" ] && [ "$arrivo" != "$riga_arrivo" ] ; then
+      continue
+    fi
+    
+    #Cerco il primo utente
+    if ! [ -n "$utente" ] || [ "$utente" == "$riga_u1" ] ; then
+      cerca "$riga_u1"
+      retval=$?
+      (( vect_offer[retval]++ ))
+    fi
+    
+    #Cerco il secondo utente
+    if ! [ -n "$utente" ] || [ "$utente" == "$riga_u2" ]
+    then
+      cerca "$riga_u2"
+      retval=$?
+      (( vect_rich[retval]++ ))
+    fi
+  done
+  
+  exec 3>&-
+  
+  if [ -n "$division" ] ; then
+  	stampa
+  	svuota
+  fi
+  
+  shift 
+done
+
+if ! [ -n "$division" ] ; then
+	stampa
+fi
+
+exit 0

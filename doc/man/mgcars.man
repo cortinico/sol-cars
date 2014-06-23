@@ -1,0 +1,95 @@
+.TH mgcars l  "July 12, 2011" "version 1.0" "CARS - un semplice sistema di cars sharing"
+.SH NAME
+mgcars \- server multithread per la gestione di un sistema di car sharing
+.SH SYNOPSIS
+.B mgcars
+city_file arcs_file
+.SH DESCRIPTION
+mgcars e' un server multithread per la gestione di un sistema di car sharing, cars.
+.PP
+Il server viene avviato con i parametri che sono stati settati nel file
+.B settings.h
+all'atto dell'installazione.
+.PP
+Una volta avviato, mgcars controlla che i 2 file passati in input siano corretti e si mette in attesa di connessioni entranti da parte di client 
+.B docars
+.PP
+mgcars e' in grado di servire
+-B POOL_SIZE
+client distinti contemporaneamente (tale valore deve essere settato nel file sopra citato).
+.PP
+Nel momento in cui avvengono determinati eventi (vedi sezione specifica MATCH DELLE RICHIESTE) il server cerca di servire le richieste pendenti con le offerte ricevute.
+Dopo averle elaborate invia i messaggi con i match trovati, le scrive sul file di log (vedi sezione LOG), ed invia un messaggio di fine elaborazione a tutti i client che hanno effettuato una richiesta.
+.PP
+Il server mgcars puo' essere terminato con un segnale di SIGINT o SIGTERM inviato al processo. Tale segnale provoca la terminazione di tutte le sessioni attive con i client, il calcolo degli ultimi match e la terminazione del server
+
+.SH MATCH DELLE RICHIESTE
+Il match delle richieste viene effettuato ogni volta che avviene un seguente evento:
+.PP
+.B - Arriva un segnale SIGURS1
+.PP
+.B - Sono passati SEC_TIMER secondi e NSEC_TIMER nanosecondi.
+.PP
+.B - Arriva un segnale di SIGTERM o di SIGINT, che provoca conseguentemetne la terminazione del server
+.PP
+Per inviare un segnale di SIGUSR1 e' possibile utilizzare l'utility kill (vedi 
+-B kill(1))
+
+.SH LOG
+.TP
+Ad ogni esecuzione del match, il server scrive sul file di log LOG_FILE gli accoppiamenti in questo formato:
+
+.B <offerente>$<richiedente>$<partenza>$...$<arrivo>
+.TP
+.B Esempio:
+pippo$pluto$PISA$LIVORNO$CECINA$VENTURINA
+.PP
+Eventuali file di log che fossero rimasti dalle vecchie attivazioni del server vengono 
+.B cancellati
+ad ogni nuova attivazione, quindi si presti attenzione nel caso in cui un determinato log sia importante.
+.PP
+I log file possono essere elaborati con carstat (vedi carstat(l)) per poterne ricavare informazioni statistiche sugli utenti e sulle richieste/offerte.
+
+.SH EXIT STATUS
+mgcars ritorna con stato 0 se l'esecuzione e' avvenuta correttamente, in tutti gli altri casi lo stato d'uscita risulta diverso da 0.
+.SH FILES
+mgcars ha bisogno che i suoi file in ingresso abbiano una determinata sintassi:
+.PP
+.TP
+.B city_file
+city_file deve contenere un elenco delle citta', separate da un ritorno a capo, gli unici caratteri consentiti sono i numeri e le lettere alfabetiche.
+.TP
+Esempio:
+.nf
+PISA
+LUCCA
+LIVORNO
+MASSA
+.fi
+
+.PP
+.TP
+.B arcs_file
+arcs_file deve contenere un elenco dei collegamenti fra citta', secondo la sintassi: <partenza>:<arrivo>:<distanza in km>. Gli unici caratteri consentiti sono i numeri e le lettere alfabetiche.
+.TP
+Esempio:
+.nf
+PISA:LUCCA:24.8
+PISA:LIVORNO:22.3
+LIVORNO:PISA:22.3
+PISA:VIAREGGIO:23.3
+.fi
+
+.PP
+Inoltre mgcars crea un file nella cartella tmp/ il cui nome e' SOCKET_NAME. Esso consiste in file speciale che viene utilizzato per comunicare con i client.
+In tutti i casi in cui la terminazione avviene correttamente tale file viene rimosso automatico. Se il client dovesse terminare in modo inaspettato e' possibile che il file non venga rimosso; provvedere dunque manualmente alla sua rimozione.
+.PP
+.B Nota: 
+Se il file SOCKET_NAME e' presente, non e' possibile avviare il server (si ricevera' l'errore Address already in user). In tal caso provvedere a rimuovere manualmente il file (mediante l'utility rm(1))
+.PP
+.B Attenzione:
+non provare a rimuovere il file durante l'esecuzione del client. Cio' potrebbe portare a malfunzionamenti di docars.
+.SH AUTHOR
+Nicola Corti <cortin [at] cli.di.unipi.it>
+.SH SEE ALSO
+docars(l) carstat(l)
