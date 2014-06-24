@@ -1,0 +1,233 @@
+=========================================================================
+ISTRUZIONI e SPECIFICHE per il TERZO FRAMMENTO del PROGETTO di LSO10/11
+========================================================================
+
+Il progetto CARS e' suddiviso in  tre frammenti.
+Il terzo e' descritto in questo README.
+
+Questo frammento prevede la realizzazione di due programmi multithreaded: 
+
+- mgcars: che realizza un server per il car sharing
+
+- docars: che realizza un client con cui gli utenti possono 
+          collegarsi al server ed inviare le richieste/offerte di sharing
+
+------------------------------------------------
+Estrarre il materiale dal KIT di progetto
+------------------------------------------------
+Creare una directory temporanea, copiare lsokit_f3CARS.tar   
+nella directory e spostarsi nella directory appena creata. Es.
+
+$$ mkdir Frammento3
+$$ mv lsokit_f3CARS.tar Frammento3
+$$ cd Frammento3
+
+S-tarare i file del kit
+
+$$ tar xvf lsokit_f3CARS.tar 
+questa operazione crea nella directory corrente una directory "CARS" che
+contiene:
+
+$$ ls CARS
+doc/ src/ README cars1011.pdf
+
+src/ contiene sorgenti, header, Makefile test etc
+
+========================================================================
+ISTRUZIONI per la realizzazione 
+========================================================================
+
+Le specifiche per la realizzazione dei due programmi si trovano nel file  
+ cars1011.pdf.
+
+Deve inoltre essere realizzata una libreria di comunicazione via 
+socket AF_UNIX il cui header e' specificato in 
+
+src/comsock.h
+
+Tale file contiene i prototipi delle funzioni da
+realizzare, i tipi di dato e le define relative ai messaggi scambiati 
+nel protocollo usato fra client e server.
+
+E' possibile generare la documentazione doxygen per questo file invocando
+
+  bash:~$ make docu
+
+nella directory src/ dopo l'esecuzione visualizzare 
+
+../doc/html/index.html
+
+con un qualsiasi browser.
+
+Il kit fornisce tre diversi test per verificare il funzionamento complessivo del progetto:
+
+1)TEST-1 il primo test verifica la corretta attivazione dei programmi ed il parsing degli argomenti. E' attivabile con
+
+$ make test31
+
+2)TEST-2 il secondo test verifica la corretta elaborazione con scarso parallelismo. E' attivabile con
+
+$ make test32
+
+3)TEST-3 il terzo test verifica il funzionamento in presenza di piu' utenti connessi contemporaneamente e la gestione dei segnali.  E' attivabile con
+
+$ make test33
+
+------------------------------------------------------------------
+File/Dir contenuti in src
+------------------------------------------------------------------
+
+$$ ls src/
+
+README-3	   Makefile		DATA/
+testparse	   testfunz		testpar
+comsock.h	   pippoclient.sh  	pippoclientw.sh 
+pippoclient2.sh    pippoclient3.sh 	pippoclient4.sh 
+pippo2client4.sh   pippo3client4.sh 	pippo4client4.sh 
+plutoclient3.sh    plutoclient4.sh      minnieclient3.sh 
+minnieclient4.sh  
+
+
+
+-----------------------------------------------
+Descrizione del contenuto dei file 
+-----------------------------------------------
+README-3		: questo file
+
+comsock.h
+			: tipi e prototipi delle funzioni da realizzare
+			  per la libreria di interazione
+			  (modificare solo aggiungendo
+			  campi/definizioni/prototipi senza MODIFICARE/ELIMINARE
+			  quelli gia' esistenti)
+
+testparse
+testfunz
+testpar
+			: script bash di test del progetto
+                          (NON MODIFICARE)
+*client*.sh
+			: script bash che realizzano dei client per i test
+			(NON MODIFICARE)
+
+Makefile		: makefile per il test del frammento e la
+			  consegna 
+			  (MODIFICARE SOLO nelle parti richieste, vedi
+			  commenti nel file)
+
+DATA/		  Directory che contiene i vari file di dati/controllo
+			  usati nei test(NON MODIFICARE)
+
+------------------------------------------------
+Cosa deve essere realizzato
+------------------------------------------------
+
+Il terzo frammento usa librerie e script sviluppati nei frammenti
+precedenti e prevede la realizzazione di: (1) la libreria di
+comunicazione "libsock.a" (2) del programma "mgcars" e (3) il programma
+"docars". 
+
+Il funzionamento della libreria e dei programmi e' specificato nel file 
+di specifiche cars1011.pdf.
+
+Il Makefile deve essere esteso con opportuni target per la
+compilazione e la generazione degli eseguibili mgcars e docars.
+Inoltre, il Makefile contiene tre variabili 
+FILE_DA_CONSEGNARE1
+FILE_DA_CONSEGNARE2
+FILE_DA_CONSEGNARE3
+devono contenere i nomi di tutti i file necessari alla corretta
+esecuzione del progetto. In particolare, 
+-- devono essere riconsegnati anche i file relativi ai primi 2 frammenti 
+-- deve essere consegnata una relazione (secondo le specifiche in cars1011.pdf) formato PDF
+
+------------------
+Come procedere :
+-----------------
+
+0) leggere attentamente il README, le specifiche e capire il funzionamento 
+   degli esempi forniti
+
+1) implementare le funzioni richieste in comsock.h
+   ed effettuare testing preliminare utilizzando processi di test sviluppati
+   allo scopo
+
+2) realizzare server e client e testarli
+
+3) effettuare il test complessivo del terzo frammento 
+   con i test forniti dai docenti
+
+4) Effettuare il test finale complessivo. E' necessario che il codice sviluppato superi i test di tutti i frammenti (1-2-3) per poter essere consegnato
+
+
+5) preparare la documentazione: ovvero commentare adeguatamente il/i file che
+   contengono la soluzione ed inserire una intestazione contenente il nome
+   dello sviluppatore ed una dichiarazione di originalita' 
+
+   /** \file pippo.c
+       \author Nino Bixio
+     Si dichiara che il contenuto di questo file e' in ogni sua parte opera
+     originale dell' autore.  */
+
+     Non e' richiesto di preparare anche la documentazione formato
+     doxygen. Chi volesse farlo e' invitato a leggere il  README.doxigen
+     del primo frammento.
+
+5) copiare il file "gruppo.txt" con nome e dati fornito nei frammenti precedentiall'interno della directory src/
+
+6) consegnare il file ESCLUSIVAMENTE eseguendo
+
+      bash:~$ make consegna3
+
+   e seguendo le istruzioni. Anche in questo caso occorre  che la variabile
+   MALLOC_TRACE sia settata  a "./.mtrace.log".  
+   Il target crea un tar file che deve essere inviato a
+   susanna@di.unipi.it in allegato ad un messaggio con subject
+   "lso11: consegna terzo frammento".
+
+  Tutte le consegne verranno confermate con un messaggio entro 2/3
+   giorni. In caso questo non si verifichi contattare il docente.
+  
+
+ ---------------------------------------
+ NOTE IMPORTANTI: LEGGERE ATTENTAMENTE
+---------------------------------------
+
+1) i tar non creati da "make consegna3" non verranno accettati
+
+2) tutti gli elaborati verranno confrontati fra di loro con tool automatici
+   per stabilire eventali situazioni di PLAGIO. Se tali situazioni si
+   verificheranno *tutti* gli elaborato coinvolti verranno annullati con
+   conseguente perdita del bonus. 
+
+3) Tutti gli studenti coinvolti in un episodio di PLAGIO comprovato dovranno
+   re-implementare il frammento incriminato e saranno sottoposti ad una prova
+   orale supplementare. In caso di recidive verranno esclusi dalla
+   possibilita' di sostenere l'esame per TUTTO IL RESTO DELL'ANNO ACCADEMICO
+   IN CORSO.
+
+4) Chi in sede di orale risulta palesemente non essere l'autore del software
+   consegnato in uno dei frammenti verra' escluso dalla possibilita' di
+   sostenere l'esame per TUTTO IL RESTO DELL'ANNO ACCADEMICO IN CORSO.
+
+5) Tutti i comportamenti scorretti ai punti 3 e 4 verranno segnalati
+   ufficialmente al presidente del corso di laurea, che si riserva di
+   decidere azioni disciplinari supplementari a quelle sopra descritte.
+
+----------------------------
+ VALUTAZIONE DEL FRAMMENTO:
+----------------------------
+
+Gli studenti che consegnano una versione funzionante e ragionevolmente
+corretta del frammento entro la data di scadenza accumulano un bonus di 2
+punti che verra' sommato al voto finale (vedi lucidi lezioni ed
+esercitazioni).
+
+Per la valutazione del codice prodotto e della relazione riferirsi
+alle sezioni rilevanti delle specifiche cars1011.pdf.
+
+
+
+
+
+

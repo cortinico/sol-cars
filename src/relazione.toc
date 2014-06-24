@@ -1,0 +1,34 @@
+\select@language {italian}
+\contentsline {section}{\numberline {1}Il Server - mgcars}{2}
+\contentsline {subsection}{\numberline {1.1}Il thread main}{2}
+\contentsline {subsubsection}{\numberline {1.1.1}Il pool di thread}{3}
+\contentsline {subsection}{\numberline {1.2}Il thread worker}{3}
+\contentsline {subsubsection}{\numberline {1.2.1}Autenticazione dell'utente}{3}
+\contentsline {subsubsection}{\numberline {1.2.2}Sessione di ricezione messaggi}{4}
+\contentsline {subsection}{\numberline {1.3}Il thread match}{4}
+\contentsline {subsubsection}{\numberline {1.3.1}La ricerca di accoppiamenti}{5}
+\contentsline {subparagraph}{Implementazione alternativa: il vettore dei precedenti}{6}
+\contentsline {subsubsection}{\numberline {1.3.2}L'aggiornamento delle offerte}{6}
+\contentsline {subsubsection}{\numberline {1.3.3}Fase finale}{6}
+\contentsline {subsection}{\numberline {1.4}Il thread signal\_handler e la terminazione del server}{6}
+\contentsline {section}{\numberline {2}Il Client - docars}{7}
+\contentsline {subsection}{\numberline {2.1}La sessione interattiva}{7}
+\contentsline {subsection}{\numberline {2.2}Il thread listener}{7}
+\contentsline {subsubsection}{\numberline {2.2.1}Mutua esclusione fra i due thread}{8}
+\contentsline {subsection}{\numberline {2.3}Terminazione del client}{8}
+\contentsline {section}{\numberline {3}Parametri d'esecuzione}{8}
+\contentsline {section}{\numberline {4}Lo script bash - carstat}{8}
+\contentsline {subsection}{\numberline {4.1}I valori di uscita}{9}
+\contentsline {subsection}{\numberline {4.2}Opzioni aggiuntive}{9}
+\contentsline {section}{\numberline {5}La libreria \texttt {dgraph}}{9}
+\contentsline {subsection}{\numberline {5.1}Scelte implementative}{9}
+\contentsline {subsection}{\numberline {5.2}Utilizzo delle espressioni regolari}{9}
+\contentsline {section}{\numberline {6}Stili di programmazione}{10}
+\contentsline {section}{\numberline {7}Requisiti Minimi}{10}
+\contentsline {section}{\numberline {8}Installazione del sistema}{10}
+\contentsline {section}{\numberline {9}\texttt {stress} - uno script per valutare le prestazioni}{10}
+\contentsline {section}{\numberline {10}Nota sull'uso dei segnali}{10}
+\contentsline {section}{\numberline {11}Bug Noti}{11}
+\contentsline {section}{\numberline {12}Possibili miglioramenti}{11}
+\contentsline {section}{\numberline {13}Documentazione allegata}{11}
+\contentsline {section}{\numberline {14}Licenza d'uso}{12}

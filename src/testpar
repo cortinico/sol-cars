@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# test client attivi prima del server
+./minnieclient4.sh  & 
+./plutoclient4.sh  &
+./pippoclient4.sh &
+./pippo2client4.sh &
+./pippo3client4.sh &
+./pippo4client4.sh &
+
+#attivazione server
+./mgcars CITY.txt TUSCANY.map &
+
+# attendo un po per le connessioni (caso pessimo)
+sleep 5
+
+# richesta calcolo accoppiamenti
+if ! killall -USR1 mgcars; then
+   echo mgcars: USR1 1>&2
+   exit 1
+fi
+
+# attendo per il calcolo
+sleep 1
+
+# file di log corretto ?
+
+# controllo il file di log 
+# path file temporaneo
+tmpfile=$(mktemp)
+# l'ordine non e' importante salvo la versione ordinata in un file temporaneo
+sort < mgcars.log > $tmpfile
+
+# confronto con il log atteso
+if ! diff mgcars.log.2.check $tmpfile ; then
+    echo Log file scorretto 1>&2
+    exit 1
+fi
+
+echo Log file corretto 1>&2
+
+# rimuovo temporaneo
+rm $tmpfile
+
+
+# controllo broken pipe
+if ! killall -PIPE mgcars; then
+   echo mgcars: SIGPIPE non gestito 1>&2
+   exit 1
+fi
+
+# server e' ancora attivo ?
+if ! killall -w mgcars; then
+   echo mgcars: non attivo! 1>&2
+   exit 1
+fi
+
+# rimosse le socket da ./tmp ?
+if ls ./tmp/* ; then
+    echo tmp ? 1>&2
+    exit 1
+fi
+
+exit 0

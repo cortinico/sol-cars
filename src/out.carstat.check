@@ -1,0 +1,20 @@
+ ---- out 1 
+minnie:0:4
+pippo3:2:1
+pippo:4:0
+pluto:1:2
+ ---- out 2 
+minnie:2:4
+pippo3:3:1
+pippo:4:1
+pippo4:1:0
+pluto:1:5
+ ---- out 3 
+minnie:1:0
+ ---- out 4 
+minnie:1:0
+pippo:0:1
+ ---- out 5 
+minnie:0:1
+pippo3:2:0
+pluto:0:1

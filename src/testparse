@@ -1,0 +1,96 @@
+#!/bin/sh
+
+#attivazioni erronee
+if ./mgcars ; then
+    exit 1
+fi
+
+if ./mgcars __file__ ; then
+    exit 1
+fi
+
+if ./mgcars __f1 __f2 __f3; then
+    exit 1
+fi
+
+# file citta' scorretto
+if ./mgcars CITYBAD.txt TUSCANY.map ; then
+    exit 1
+fi
+
+# file strade scorretto
+if ./mgcars CITY.txt TUSCANY2.map ; then
+    exit 1
+fi
+
+
+# manca user name
+if ./docars ; then
+    return 1 
+fi
+
+
+# troppi parametri
+if ./docars pippo pluto ; then
+    return 1
+fi
+
+
+# prima attivazione client pippo
+./pippoclient.sh &
+# attivazione server
+./mgcars CITY.txt TUSCANY.map  &
+
+
+# uccido il client
+if ! killall -w pippoclient.sh; ! killall -w docars ; then
+    echo Error 0 1>&2
+    return 1
+fi
+
+
+
+echo Prima connessione OK 1>&2
+
+# seconda invocazione pippo (password errata)
+./pippoclientw.sh &
+
+# uccido il client (non deve essere attivo)
+if  killall -w pippoclientw.sh; killall -w docars ; then
+    echo Error 1 1>&2
+    return 1
+fi
+echo Seconda connessione OK 1>&2
+
+# terza invocazione pippo 
+./pippoclient.sh &
+
+# uccido il client
+if ! killall -w pippoclient.sh; ! killall -w docars ; then
+    echo Error 2 1>&2
+    return 1
+fi
+echo Terzo connessione OK 1>&2
+
+# quarta attivazione pippo (con alcune richieste/offerte)
+./pippoclient2.sh &
+
+# uccido il server e forzo il calcolo degli accoppiamenti e la risposta
+# al client
+if ! killall -w mgcars ; then
+    return 1
+fi
+
+# attendo
+sleep 1
+# controllo se il client e' ancora attivo 
+# (deve terminare ricevuta la risposta del server)
+if killall -w pippoclient2.sh; killall -w docars ; then
+    echo Error 3 1>&2
+    return 1
+fi
+
+exit 0
+
+
+

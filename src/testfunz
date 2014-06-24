@@ -1,0 +1,71 @@
+#!/bin/sh
+
+#attivazione server
+./mgcars CITY.txt TUSCANY.map &
+
+#attivazione vari client
+./pippoclient3.sh &
+./plutoclient3.sh  &
+./minnieclient3.sh  & 
+
+#attendo prima di invocare terminazione e match
+sleep 3
+
+#attendo il match
+if ! killall -w mgcars ; then
+    return 1
+fi
+
+
+# controllo il file di log 
+# path file temporaneo
+tmpfile=$(mktemp)
+
+# l'ordine non e' importante salvo la versione ordinata in un file temporaneo
+sort < mgcars.log > $tmpfile
+
+# confronto con il log atteso
+if ! diff mgcars.log.1.check $tmpfile ; then
+    echo Log file scorretto 1>&2
+    exit 1
+fi
+
+echo Primo test: Log file corretto 1>&2
+
+# secondo test
+#attivazione server
+./mgcars CITY.txt TUSCANY.map &
+
+#attivazione vari client
+./minnieclient4.sh  & 
+./plutoclient4.sh  &
+./pippoclient4.sh &
+./pippo2client4.sh &
+./pippo3client4.sh &
+./pippo4client4.sh &
+
+
+#attendo prima di invocare terminazione e match
+sleep 5
+
+#attendo il match
+if ! killall -w mgcars ; then
+    return 1
+fi
+
+# controllo il file di log 
+# l'ordine non e' importante salvo la versione ordinata in un file temporaneo
+sort < mgcars.log > $tmpfile
+
+# confronto con il log atteso
+if ! diff mgcars.log.2.check $tmpfile ; then
+    echo Log file scorretto 1>&2
+    exit 1
+fi
+
+echo Secondo test: Log file corretto 1>&2
+
+# rimuovo temporaneo
+rm $tmpfile
+exit 0
+

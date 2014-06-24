@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# opzione -a -p invocate in modo errato
+if ./carstat -a -p ; then
+    exit 1
+fi
+
+# opzione -x non prevista
+if ./carstat -x PISA ; then
+    exit 1
+fi
+
+# mancano i file da elaborare
+if ./carstat -a PISA ; then
+    exit 1
+fi
+
+# opzione -a invocata 2 volte
+if  ./carstat -u minnie -a FIRENZE -a PRATO carstat.input1 carstat.input2 2> .err; then
+    exit 1
+fi
+
+# file non esistente
+if ./carstat -a PISA __ciccio ; then
+    exit 1
+fi
+
+# file esistente
+# nessuna rotta soddisfa -a PISA
+if ! ./carstat -a PISA carstat.input1 ; then
+    exit 1
+fi
+
+i=1
+echo " ---- out $i " > out.carstat
+# file esistenti
+if ! ./carstat -a AREZZO carstat.input1 carstat.input2 | sort >> out.carstat ; then
+    exit 1
+fi
+
+i=$((i+1))
+echo " ---- out $i " >> out.carstat
+# file esistenti
+if ! ./carstat carstat.input1 carstat.input2 | sort >> out.carstat ; then
+    exit 1
+fi
+
+i=$((i+1))
+echo " ---- out $i " >> out.carstat
+# file esistenti
+if ! ./carstat -u minnie -a FIRENZE -p PRATO carstat.input1 carstat.input2 | sort >> out.carstat ; then
+    exit 1
+fi
+
+i=$((i+1))
+echo " ---- out $i " >> out.carstat
+# file esistenti
+if ! ./carstat -a "BARBERINO DI MUGELLO" carstat.input1 carstat.input2 | sort >> out.carstat ; then
+    exit 1
+fi
+
+i=$((i+1))
+echo " ---- out $i " >> out.carstat
+# file esistenti
+if ! ./carstat -p CECINA carstat.input1 carstat.input2 | sort >> out.carstat ; then
+    exit 1
+fi
+
+exit 0

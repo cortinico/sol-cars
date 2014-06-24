@@ -1,0 +1,9 @@
+#!/bin/bash
+
+./docars pippo4 <<EOF
+ppp444bbbbkkkkk
+ORBETELLO:SIENA:2
+PIOMBINO:CECINA:2
+LIVORNO:PISA:2
+%EXIT
+EOF
